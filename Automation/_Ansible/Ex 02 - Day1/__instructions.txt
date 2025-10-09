@@ -1,7 +1,7 @@
 
 Find and Replace ( ctrl + h ): 
 
-	Your monitor number =  #$34T#
+	Your monitor number =  32
 
 Replace all ( ctrl + alt + enter)
 
@@ -11,8 +11,8 @@ Replace all ( ctrl + alt + enter)
 =====| STEP 1 - Add routing to PC
 
 @command prompt
-route add 10.0.0.0 mask 255.0.0.0 10.#$34T#.1.4
-route add 200.0.0.0 mask 255.255.255.0 10.#$34T#.1.4
+route add 10.0.0.0 mask 255.0.0.0 10.32.1.4
+route add 200.0.0.0 mask 255.255.255.0 10.32.1.4
 
 
 =====| STEP 2 - Add ip address and routing to device
@@ -21,7 +21,7 @@ route add 200.0.0.0 mask 255.255.255.0 10.#$34T#.1.4
 conf t
  int vlan 1
   no shut
-  ip add 10.#$34T#.1.2 255.255.255.0
+  ip add 10.32.1.2 255.255.255.0
   desc mgmtData-configuredManually
   exit
   enable secret pass
@@ -36,7 +36,7 @@ conf t
 conf t
  int vlan 1
   no shut
-  ip add 10.#$34T#.1.4 255.255.255.0
+  ip add 10.32.1.4 255.255.255.0
   desc mgmtData-configuredManually
   exit
  vlan 100
@@ -44,7 +44,7 @@ conf t
   exit
  int vlan 100
   no shut
-  ip add 10.#$34T#.100.4 255.255.255.0
+  ip add 10.32.100.4 255.255.255.0
   desc vlanMgmtVoice-configuredManually
   exit
  int fa 0/3
@@ -54,10 +54,10 @@ conf t
  int gi0/1
   no switchport
   no shut 
-  ip add 10.#$34T#.#$34T#.4 255.255.255.0
+  ip add 10.32.32.4 255.255.255.0
   exit
  ip routing
- ip route 0.0.0.0 0.0.0.0 10.#$34T#.#$34T#.1 120
+ ip route 0.0.0.0 0.0.0.0 10.32.32.1 120
  enable secret pass
  line vty 0 14
   password pass
@@ -70,10 +70,10 @@ conf t
 conf t
  int fa0/0
   no shut
-  ip add 10.#$34T#.100.8 255.255.255.0
+  ip add 10.32.100.8 255.255.255.0
   exit
  ip routing
- ip route 0.0.0.0 0.0.0.0 10.#$34T#.100.4 120
+ ip route 0.0.0.0 0.0.0.0 10.32.100.4 120
  enable secret pass
  line vty 0 14
   password pass
@@ -85,11 +85,11 @@ conf t
 @edge
 conf t
  int gi 0/0/0
-  ip add 10.#$34T#.#$34T#.1 255.255.255.0
+  ip add 10.32.32.1 255.255.255.0
   no shut
   exit
  ip routing
- ip route 10.#$34T#.0.0 255.255.0.0 10.#$34T#.#$34T#.4 120
+ ip route 10.32.0.0 255.255.0.0 10.32.32.4 120
  enable secret pass
  line vty 0 14
   password pass
@@ -103,10 +103,10 @@ conf t
 
 On SecureCRT:
 
-	10.#$34T#.1.2		CoreTaas
-	10.#$34T#.1.4		CoreBaba
-	10.#$34T#.100.8		CUCM
-	10.#$34T#.#$34T#.1	EDGE
+	10.32.1.2		CoreTaas
+	10.32.1.4		CoreBaba
+	10.32.100.8		CUCM
+	10.32.32.1	EDGE
 
 
 =====| Step 4 - Note MAC Addresses
@@ -123,7 +123,7 @@ Ephone 2 MAC Address (fa0/7):   replaceMe
 =====| Step 4 - Enable SSH
 
 For an SSH connection to be established, the device must have:
-    - a non-default hostname         hostname coreBaba#$34T#
+    - a non-default hostname         hostname coreBaba32
     - a domain name                  ip domain name day1lab.com
     - a local user account           username admin privilege 15 secret pass
     - generated crypto keys          crypto key generate rsa modulus 2048
@@ -140,7 +140,7 @@ Extra lines
 
 @coreTaas
 conf t
- hostname coreTaas-#$34T#
+ hostname coreTaas-32
  service password-encryption
  no logging console
  no ip domain-lookup
@@ -159,7 +159,7 @@ conf t
  
 @coreBaba
 conf t
- hostname coreBaba-#$34T#
+ hostname coreBaba-32
  service password-encryption
  no logging console
  no ip domain-lookup
@@ -178,7 +178,7 @@ conf t
 
 @cucm
 conf t
- hostname cucm-#$34T#
+ hostname cucm-32
  service password-encryption
  no logging console
  no ip domain-lookup
@@ -195,7 +195,7 @@ conf t
 
 @edge
 conf t
- hostname edge-#$34T#
+ hostname edge-32
  service password-encryption
  no logging console
  no ip domain-lookup
@@ -217,9 +217,9 @@ conf t
 =====| Step 6 - Set IP address and Routing
 
 @NetOps
-ifconfig ens192 10.#$34T#.1.6 netmask 255.255.255.0 up
-ip route add 10.0.0.0/8 via 10.#$34T#.1.4 dev ens192
-ip route add 200.0.0.0/24 via 10.#$34T#.1.4 dev ens192
+ifconfig ens192 10.32.1.6 netmask 255.255.255.0 up
+ip route add 10.0.0.0/8 via 10.32.1.4 dev ens192
+ip route add 200.0.0.0/24 via 10.32.1.4 dev ens192
 
 @NetOps
 sudo nmcli connection add type ethernet con-name "TunayNaLAN" ifname ens256 ipv4.method manual ipv4.address 10.92.1.6/24 autoconnect yes
@@ -235,14 +235,14 @@ rm -rf /root/.ssh/known_hosts
 
 SSH to the ff devices:
 
-	10.#$34T#.1.2		CoreTaas
-	10.#$34T#.1.4		CoreBaba
-	10.#$34T#.100.8		CUCM
-	10.#$34T#.#$34T#.1	EDGE
+	10.32.1.2		CoreTaas
+	10.32.1.4		CoreBaba
+	10.32.100.8		CUCM
+	10.32.32.1	EDGE
 
 
 @NetOps
-ssh admin@10.#$34T#.1.2
+ssh admin@10.32.1.2
 
 
 Accept keys
@@ -270,5 +270,6 @@ Make sure pings are SUCCESS
 @NetOps
 
 ansible-playbook run_all.yml
+
 
 
